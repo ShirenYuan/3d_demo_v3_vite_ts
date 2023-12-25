@@ -1,17 +1,177 @@
 <script setup lang="ts">
 import TheWelcome from '../components/TheWelcome.vue'
+import WeatherWidget from '../components/HelloWorld.vue';
+import { ref,onMounted,defineComponent } from 'vue';
+import { Vue3SeamlessScroll } from "vue3-seamless-scroll";
+import * as echarts from 'echarts';
+type EChartsOption = echarts.EChartsOption;
+
+
+
+const animIndex = ref(0)
+const cameraList = ref([
+
+  {status:"0",id: "1",name:"X射线衍射仪",cameraPosition:{x:"12.31",y:"2.93",z:"-32.63"},cameraRotation:{x:"-1.48",y:"-1.06",z:"-1.47"}},
+  {status:"1",id: "2",name:"高频疲劳材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  {status:"0",id: "3",name:"高温拉伸设备",cameraPosition:{x:"13.96",y:"4.66",z:"-21.76"},cameraRotation:{x:"-2.57",y:"-0.13",z:"-3.05"}},
+  {status:"1",id: "4",name:"电子拉伸材料试验机",cameraPosition:{x:"11.22",y:"2.76",z:"-22.19"},cameraRotation:{x:"-2.88",y:"0.18",z:"3.09"}},
+  // {id: "5",name:"注塑机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  // {id: "6",name:"锥形双螺杆挤出机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  {status:"0",id: "7",name:"焊接机器人",cameraPosition:{x:"1.72",y:"3.90",z:"-24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
+  // {id: "8",name:"激光清洗机",cameraPosition:{x:"1.72",y:"3.90",z:" -24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
+  {status:"0",id: "9",name:"真空纤维炉",cameraPosition:{x:"-3.62",y:"3.56",z:"-18.26"},cameraRotation:{x:"-2.65",y:"1.30",z:"2.66"}},
+  // {id: "10",name:"伺服压力机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  {status:"1",id: "11",name:"光纤激光加工控制系统",cameraPosition:{x:"-0.39",y:"2.97",z:"4.33"},cameraRotation:{x:"-1.61",y:"-1.37",z:"-1.61"}},
+  // {id: "12",name:"连续激光机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  {status:"0",id: "13",name:"CMT冷金属过渡焊接系统",cameraPosition:{x:"-4.34",y:"3.49",z:"3.80"},cameraRotation:{x:"-2.84",y:"-0.17",z:"-3.08"}},
+  // {id: "14",name:"球磨机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  // {id: "15",name:"纳秒激光器",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  // {id: "16",name:"三坐标",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+  {status:"1",id: "17",name:"蟠变试验机",cameraPosition:{x:"-1.12",y:"2.84",z:"28.70"},cameraRotation:{x:"3.02",y:"0.10",z:"3.12"}},
+])
+
+
+const parentMethod = (index:number) => {
+  console.log(index)
+  animIndex.value = index
+};
+
+
+const list = ref([
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
+]);
+
+
+var option: EChartsOption;
+option = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'none'
+    },
+    formatter: function (params: any) {
+      return params[0].name + ': ' + params[0].value;
+    }
+  },
+  xAxis: {
+    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    axisTick: { show: false },
+    axisLine: { show: false },
+    axisLabel: {
+      color: '#0000ff'
+    }
+  },
+  yAxis: {
+    splitLine: { show: false },
+    axisTick: { show: false },
+    axisLine: { show: false },
+    axisLabel: { show: false }
+  },
+  color: ['#0000ff'],
+  series: [
+    {
+      name: 'hill',
+      type: 'pictorialBar',
+      barCategoryGap: '-130%',
+      // symbol: 'path://M0,10 L10,10 L5,0 L0,10 z',
+      symbol: 'path://M0,10 L10,10 C5.5,10 5.5,5 5,0 C4.5,5 4.5,10 0,10 z',
+      itemStyle: {
+        opacity: 0.5
+      },
+      emphasis: {
+        itemStyle: {
+          opacity: 1
+        }
+      },
+      data: [13, 13, 8, 13, 18, 8, 13, 10, 13, 7, 15, 18],
+      z: 10
+    },
+    
+  ]
+};
+
+
+const timerData = ref<any>(null)
+const dataDat = ref<any>({})
+
+
+onMounted(() => {
+  initChartFun("echarts4",option)
+  if(timerData.value){
+    clearInterval(timerData.value)
+  }
+  timerData.value = setInterval(()=>{
+    dataDat.value = getCurrentTime();
+  },1000)
+})
+function getCurrentTime() {
+  const now = new Date();
+
+  // 获取小时和分钟
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+
+  // 获取年、月、日
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // 月份从0开始，需要加1
+  const day = now.getDate().toString().padStart(2, '0');
+
+  // 获取星期
+  const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  const weekDay = weekdays[now.getDay()];
+
+  // 构造返回的对象
+  const dateTime = `${hours}:${minutes}`;
+  const years = `${year}.${month}.${day}`;
+  const week = weekDay;
+
+  return { dateTime, years, week };
+}
+
+
+
+function initChartFun(className:string,optionDatil:object){
+  console.log(className)
+  console.log(optionDatil)
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById(className));
+  // 绘制图表
+  myChart.setOption(optionDatil);
+}
+
+
 </script>
 
 <template>
   <main>
     <div class="main">
-      <TheWelcome class="main_3d" />
+      <TheWelcome class="main_3d" :cameraList="cameraList" :parentMethod="parentMethod" />
+      <!-- detail -->
+      <div class="main_detail">
+        <div class="main_detail_title">{{ cameraList[animIndex].name }}</div>
+        <div v-if="cameraList[animIndex].status=='0'" class="main_detail_status">未使用</div>
+        <div v-if="cameraList[animIndex].status=='1'" class="main_detail_status2">使用中</div>
+      </div>
       <!-- top -->
       <div class="main_top">
         <div class="main_top_left">
           <div class="main_top_left_left">
             <div class="main_top_left_left_icon"></div>
-            <div class="main_top_left_left_tianqi"></div>
+            <div class="main_top_left_left_tianqi">
+              <WeatherWidget />
+            </div>
           </div>
           <div class="main_top_left_right">
             <div class="main_top_left_right_icon"></div>
@@ -23,9 +183,9 @@ import TheWelcome from '../components/TheWelcome.vue'
           </div>
         </div>
         <div class="main_top_right">
-          <div class="main_top_right_date">9:00</div>
-          <div class="main_top_right_year">2023.12.20</div>
-          <div class="main_top_right_week">星期一</div>
+          <div class="main_top_right_date">{{ dataDat.dateTime }}</div>
+          <div class="main_top_right_year">{{ dataDat.years }}</div>
+          <div class="main_top_right_week">{{ dataDat.week }}</div>
         </div>
       </div>
       <!-- content -->
@@ -40,15 +200,35 @@ import TheWelcome from '../components/TheWelcome.vue'
             </div>
             <div class="main_content_left_one_content">
               <div class="main_content_left_one_content_one">
-                <div class="main_content_left_one_content_one_echarts"></div>
+                <div class="main_content_left_one_content_one_echarts">
+                  <div class="main_content_left_one_content_one_echarts_top"></div>
+                  <div class="main_content_left_one_content_one_echarts_bot"></div>
+                  <div class="main_content_left_one_content_one_echarts_content">
+                    <div class="main_content_left_one_content_one_echarts_content_title">10</div>
+                    <div class="main_content_left_one_content_one_echarts_content_text">(台)</div>
+                  </div>
+                </div>
                 <div class="main_content_left_one_content_one_text">使用中</div>
               </div>
               <div class="main_content_left_one_content_one">
-                <div class="main_content_left_one_content_one_echarts"></div>
+                <div class="main_content_left_one_content_one_echarts2">
+                  <div class="main_content_left_one_content_one_echarts_top"></div>
+                  <div class="main_content_left_one_content_one_echarts_bot"></div>
+                  <div class="main_content_left_one_content_one_echarts_content">
+                    <div class="main_content_left_one_content_one_echarts_content_title">3692</div>
+                    <div class="main_content_left_one_content_one_echarts_content_text">(小时)</div>
+                  </div>
+                </div>
                 <div class="main_content_left_one_content_one_text">使用统计</div>
               </div>
               <div class="main_content_left_one_content_one">
-                <div class="main_content_left_one_content_one_echarts"></div>
+                <div class="main_content_left_one_content_one_echarts3">
+                  <div class="main_content_left_one_content_one_echarts_top"></div>
+                  <div class="main_content_left_one_content_one_echarts_bot"></div>
+                  <div class="main_content_left_one_content_one_echarts_content">
+                    <div class="main_content_left_one_content_one_echarts_content_title">65%</div>
+                  </div>
+                </div>
                 <div class="main_content_left_one_content_one_text">使用效率</div>
               </div>
             </div>
@@ -124,24 +304,15 @@ import TheWelcome from '../components/TheWelcome.vue'
               </div>
               <div class="main_content_right_one_content_content">
                 <div class="main_content_right_one_content_content_ul">
-                  <div class="main_content_right_one_content_content_ul_li">
-                    <div class="main_content_right_one_content_content_ul_li_icon"></div>
-                    <div class="main_content_right_one_content_content_ul_li_name">xx实验室</div>
-                    <div class="main_content_right_one_content_content_ul_li_shebei">实验设备名称xx</div>
-                    <div class="main_content_right_one_content_content_ul_li_status">使用中</div>
-                  </div>
-                  <div class="main_content_right_one_content_content_ul_li">
-                    <div class="main_content_right_one_content_content_ul_li_icon"></div>
-                    <div class="main_content_right_one_content_content_ul_li_name">xx实验室</div>
-                    <div class="main_content_right_one_content_content_ul_li_shebei">实验设备名称xx</div>
-                    <div class="main_content_right_one_content_content_ul_li_status2">未使用</div>
-                  </div>
-                  <div class="main_content_right_one_content_content_ul_li">
-                    <div class="main_content_right_one_content_content_ul_li_icon"></div>
-                    <div class="main_content_right_one_content_content_ul_li_name">xx实验室</div>
-                    <div class="main_content_right_one_content_content_ul_li_shebei">实验设备名称xx</div>
-                    <div class="main_content_right_one_content_content_ul_li_status">使用中</div>
-                  </div>
+                  <vue3-seamless-scroll :list="list" class="scroll">
+                    <div class="main_content_right_one_content_content_ul_li" v-for="(item, index) in list" :key="index">
+                      <div class="main_content_right_one_content_content_ul_li_icon"></div>
+                      <div class="main_content_right_one_content_content_ul_li_name">{{ item.name }}</div>
+                      <div class="main_content_right_one_content_content_ul_li_shebei">{{ item.shebei }}</div>
+                      <div v-if="item.status=='0'" class="main_content_right_one_content_content_ul_li_status">使用中</div>
+                      <div v-if="item.status=='1'" class="main_content_right_one_content_content_ul_li_status2">未使用</div>
+                    </div>
+                  </vue3-seamless-scroll>
                 </div>
               </div>
             </div>
@@ -152,8 +323,8 @@ import TheWelcome from '../components/TheWelcome.vue'
               <div class="main_content_right_one_title_text">设备使用趋势（12个月）</div>
               <div class="main_content_right_one_title_icon2"></div>
             </div>
-            <div class="main_content_right_one_content">
-              <div class="main_content_right_one_content_echarts"></div>
+            <div class="main_content_right_one_content main_content_right_one_content2">
+              <div id="echarts4" class="main_content_right_one_content_echarts"></div>
             </div>
           </div>
         </div>
@@ -193,6 +364,28 @@ import TheWelcome from '../components/TheWelcome.vue'
   height: 100vh;
   position: relative;
   overflow: hidden;
+  .main_detail {
+    /* width: 0px; */
+    /* height: 50px; */
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    padding: 20px;
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: center;
+    .main_detail_title {
+    }
+    .main_detail_status {
+      color: #00ff00;
+    }
+    .main_detail_status2 {
+      color: #ff0000;
+    }
+  }
   .main_3d {
     width: 100%;
     height: 100%;
@@ -205,7 +398,7 @@ import TheWelcome from '../components/TheWelcome.vue'
     top: 0;
     left: 0;
     width: 100%;
-    height: 7%;
+    height: 16%;
     background: url("../assets/img/014.png")0 0 / 100% 100%;
     display: flex;
     align-items: center;
@@ -217,11 +410,13 @@ import TheWelcome from '../components/TheWelcome.vue'
     text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
     box-sizing: border-box;
     padding: 0 76.5px 0 75.5px;
+    margin-top: -20px;
     .main_top_left {
       display: flex;
       align-items: center;
       .main_top_left_left {
         display: flex;
+        align-items: center;
         .main_top_left_left_icon {
           width: 14.25px;
           height: 23.1px;
@@ -229,7 +424,7 @@ import TheWelcome from '../components/TheWelcome.vue'
           margin-right: 14.5px;
         }
         .main_top_left_left_tianqi {
-
+          /* width: 100px; */
         }
       }
       .main_top_left_right {
@@ -278,10 +473,15 @@ import TheWelcome from '../components/TheWelcome.vue'
       top: 0;
       .main_content_left_one {
         width: 100%;
-        height: 400px;
+        height: 350px;
         .main_content_left_one_title {
+          width: 100%;
+          height: 50px;
           display: flex;
-          align-items: flex-end;
+          align-items: center;
+          background: url(../assets/img/011.png) 0 0 / 100% 100%;
+          box-sizing: border-box;
+          padding-left: 70px;
           .main_content_left_one_title_text {
             font-size: 23px;
             font-family: SourceHanSansCN;
@@ -308,7 +508,7 @@ import TheWelcome from '../components/TheWelcome.vue'
           height: 100%;
           display: flex;
           align-items: center;
-          justify-content: center;
+          /* justify-content: center; */
         }
         .main_content_left_one_content_one {
           display: flex;
@@ -316,10 +516,146 @@ import TheWelcome from '../components/TheWelcome.vue'
           align-items: center;
           margin-right: 25px;
           .main_content_left_one_content_one_echarts {
-            width: 135.3px;
-            height: 135.3px;
-            background: red;
+            width: 136px;
+            height: 136px;
+            position: relative;
+            .main_content_left_one_content_one_echarts_top {
+              width: 100%;
+              height: 50%;
+              border-radius: 68px 68px 0 0;
+              border-top: 1px solid #FBAB20;
+              border-left: 1px solid #FBAB20;
+              border-right: 1px solid #FBAB20;
+            }
+            .main_content_left_one_content_one_echarts_bot {
+              width: 100%;
+              height: 50%;
+              border-radius:  0 0 68px 68px;
+              border-bottom: 3px solid #FBAB20;
+              border-left: 3px solid #FBAB20;
+              border-right: 3px solid #FBAB20;
+            }
+            .main_content_left_one_content_one_echarts_content {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%,-50%);
+              width: 114px;
+              height: 114px;
+              border-radius: 50%;
+              border: 1px #FBAB20 dashed;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              .main_content_left_one_content_one_echarts_content_title {
+                font-size: 30px;
+                font-family: SourceHanSansCN;
+                font-weight: bold;
+                color: #FBB020;
+                text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+              }
+              .main_content_left_one_content_one_echarts_content_text {
+                font-size: 16px;
+                font-family: SourceHanSansCN;
+                font-weight: 400;
+                color: #E6E6E6;
+                text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+              }
+            }
           }
+          .main_content_left_one_content_one_echarts2 {
+            width: 136px;
+            height: 136px;
+            position: relative;
+            .main_content_left_one_content_one_echarts_top {
+              width: 100%;
+              height: 50%;
+              border-radius: 68px 68px 0 0;
+              border-top: 3px solid #20FBF4;
+              border-left: 3px solid #20FBF4;
+              border-right: 3px solid #20FBF4;
+            }
+            .main_content_left_one_content_one_echarts_bot {
+              width: 100%;
+              height: 50%;
+              border-radius:  0 0 68px 68px;
+              border-bottom: 1px solid #20FBF4;
+              border-left: 1px solid #20FBF4;
+              border-right: 1px solid #20FBF4;
+            }
+            .main_content_left_one_content_one_echarts_content {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%,-50%);
+              width: 114px;
+              height: 114px;
+              border-radius: 50%;
+              border: 1px #20FBF4 dashed;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              .main_content_left_one_content_one_echarts_content_title {
+                font-size: 30px;
+                font-family: SourceHanSansCN;
+                font-weight: bold;
+                color: #20FBF4;
+                text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+              }
+              .main_content_left_one_content_one_echarts_content_text {
+                font-size: 16px;
+                font-family: SourceHanSansCN;
+                font-weight: 400;
+                color: #E6E6E6;
+                text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+              }
+            }
+          }
+          .main_content_left_one_content_one_echarts3 {
+            width: 136px;
+            height: 136px;
+            position: relative;
+            .main_content_left_one_content_one_echarts_top {
+              width: 100%;
+              height: 50%;
+              border-radius: 68px 68px 0 0;
+              border-top: 1px solid #2177FD;
+              border-left: 1px solid #2177FD;
+              border-right: 1px solid #2177FD;
+            }
+            .main_content_left_one_content_one_echarts_bot {
+              width: 100%;
+              height: 50%;
+              border-radius:  0 0 68px 68px;
+              border-bottom: 3px solid #2177FD;
+              border-left: 3px solid #2177FD;
+              border-right: 3px solid #2177FD;
+            }
+            .main_content_left_one_content_one_echarts_content {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%,-50%);
+              width: 114px;
+              height: 114px;
+              border-radius: 50%;
+              border: 1px #2177FD dashed;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              .main_content_left_one_content_one_echarts_content_title {
+                font-size: 30px;
+                font-family: SourceHanSansCN;
+                font-weight: bold;
+                color: #2177FD;
+                text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+              }
+            }
+          }
+          
           .main_content_left_one_content_one_text {
             font-size: 20px;
             font-family: SourceHanSansCN;
@@ -455,8 +791,13 @@ import TheWelcome from '../components/TheWelcome.vue'
 
       .main_content_right_one {
         .main_content_right_one_title {
+          width: 100%;
+          height: 50px;
           display: flex;
-          align-items: flex-end;
+          align-items: center;
+          background: url(../assets/img/011.png) 0 0 / 100% 100%;
+          box-sizing: border-box;
+          padding-left: 70px;
           .main_content_right_one_title_text {
             font-size: 23px;
             font-family: SourceHanSansCN;
@@ -479,7 +820,7 @@ import TheWelcome from '../components/TheWelcome.vue'
         }
         .main_content_right_one_content {
           width: 100%;
-          height: 100%;
+          height: 300px;
 
           .main_content_right_one_content_title {
             width: 100%;
@@ -492,6 +833,8 @@ import TheWelcome from '../components/TheWelcome.vue'
             color: #FFFFFF;
             line-height: 38px;
             text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
+            box-sizing: border-box;
+            padding: 0 100px 0 0;
             .main_content_right_one_content_title_name {
 
             }
@@ -506,6 +849,8 @@ import TheWelcome from '../components/TheWelcome.vue'
             width: 100%;
             .main_content_right_one_content_content_ul {
               width: 100%;
+              height: 260px;
+              overflow: hidden;
               .main_content_right_one_content_content_ul_li {
                 width: 455px;
                 height: 34px;
@@ -567,8 +912,13 @@ import TheWelcome from '../components/TheWelcome.vue'
             }
           }
           .main_content_right_one_content_echarts {
-
+            width: 100%;
+            height: 100%;
           }
+        }
+        .main_content_right_one_content2 {
+          width: 100%;
+          height: 300px;
         }
       }
     }

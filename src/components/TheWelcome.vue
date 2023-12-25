@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch ,defineProps } from 'vue';
 import * as THREE from 'three';
 import TWEEN from 'tween.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader';
@@ -20,6 +20,21 @@ let renderer: THREE.WebGLRenderer;
 let ambientLight: THREE.AmbientLight;
 let controls: OrbitControls;
 let model;
+// 定义属性，接收父组件传递的方法
+const parents = defineProps(['parentMethod','cameraList']);
+
+const timer = ref<any>(null)
+
+// const cameraList = [
+//   {name:"X射线衍射仪",cameraPosition:{x:"11.20",y:"11.59",z:"-32.99"},cameraRotation:{x:"-1.55",y:"-0.62",z:"-1.55"}},
+//   {name:"高频疲劳材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+//   {name:"高温拉伸设备",cameraPosition:{x:"13.96",y:"4.66",z:"-21.76"},cameraRotation:{x:"-2.57",y:"-0.13",z:"-3.05"}},
+//   {name:"电子拉伸材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+//   {name:"注塑机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+//   // {name:"电子拉伸材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+//   // {name:"电子拉伸材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+//   // {name:"电子拉伸材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+// ]
 
 watch(container, () => {
   // 处理容器大小变化
@@ -49,25 +64,48 @@ onMounted(() => {
   animate();
   // 创建手势
   initControls();
-});
 
-const changeCameraPosition = () => {
-  console.log("切换镜头")
-  console.log(camera)
-  // 点击按钮时改变相机的位置，加入 Tween.js 动画
-  if (camera) {
-    const currentPosition = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-    const targetPosition = { x: 50, y: 50, z: 50 };
+  console.log(parents.cameraList)
+  // 定时更新相机位置和朝向
+  let currentIndex = 0;
+  const updateCamera = () => {
+    const targetPosition = new THREE.Vector3(
+      parseFloat(parents.cameraList[currentIndex].cameraPosition.x),
+      parseFloat(parents.cameraList[currentIndex].cameraPosition.y),
+      parseFloat(parents.cameraList[currentIndex].cameraPosition.z)
+    );
+    const targetRotation = new THREE.Euler(
+      parseFloat(parents.cameraList[currentIndex].cameraRotation.x),
+      parseFloat(parents.cameraList[currentIndex].cameraRotation.y),
+      parseFloat(parents.cameraList[currentIndex].cameraRotation.z)
+    );
 
-    new TWEEN.Tween(currentPosition)
-      .to(targetPosition, 1000) // 1000毫秒（1秒）的动画时间
-      .easing(TWEEN.Easing.Quadratic.Out) // 缓动函数，可以根据需要选择
+    new TWEEN.Tween(camera.position)
+      .to(targetPosition, 1000)
+      .start();
+
+    // 使用回调函数手动更新相机的rotation属性
+    new TWEEN.Tween({})
+      .to({}, 1000)
       .onUpdate(() => {
-        camera!.position.set(currentPosition.x, currentPosition.y, currentPosition.z);
+        camera.rotation.copy(targetRotation);
+      })
+      .onComplete(() => {
+        // 在Tween完成时触发change事件，传递当前的index值
+        if (parents.parentMethod) {
+          parents.parentMethod(currentIndex);
+        }
+
       })
       .start();
+
+    currentIndex = (currentIndex + 1) % parents.cameraList.length;
+  };
+  if(timer.value){
+    clearInterval(timer.value)
   }
-}
+  timer.value = setInterval(updateCamera, 5000); // 每5秒钟更新一次相机位置和朝向
+});
 
 
 // 创建场景
@@ -144,7 +182,8 @@ const initCamera = () => {
 
   const target = new THREE.Vector3(0, 10, 0);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(30,30,30);
+  camera.position.set(30, 30, 30);
+  // camera.rotation.set(0, 0, 0);
   camera.lookAt(target);
 }
 
@@ -191,7 +230,9 @@ const animate = () => {
   const cameraPosition = camera.position.clone();
   const cameraRotation = camera.rotation.clone();
 
+  // console.log("位置")
   // console.log(cameraPosition)
+  // console.log("朝向")
   // console.log(cameraRotation)
 
   // 沿 Y 轴旋转
@@ -212,7 +253,7 @@ const initControls = () => {
   controls.enableZoom = true;
 
   // 禁用平移
-  controls.enablePan = false;
+  controls.enablePan = true;
 
   // 如果需要阻止用户在旋转和缩放过程中触发点击事件，可以设置以下属性
   controls.enableDamping = true;
