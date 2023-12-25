@@ -1,10 +1,14 @@
 <template>
-  <div ref="container"></div>
+  <div>
+    <div ref="container"></div>
+    <!-- <button @click="changeCameraPosition">Change Camera Position</button> -->
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import * as THREE from 'three';
+import TWEEN from 'tween.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader';
 // 在导入的地方添加以下导入语句
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -15,6 +19,7 @@ let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
 let ambientLight: THREE.AmbientLight;
 let controls: OrbitControls;
+let model;
 
 watch(container, () => {
   // 处理容器大小变化
@@ -30,7 +35,8 @@ onMounted(() => {
   initScene();
   // 加载文件
   // loadFBXModel('3Dfile/11.FBX');
-  loadFBXModel('3Dfile/22.FBX');
+  // loadFBXModel('3Dfile/22.FBX');
+  loadFBXModel('3Dfile/33.FBX');
   // 创建相机
   initCamera();
   // 创建灯光
@@ -45,19 +51,64 @@ onMounted(() => {
   initControls();
 });
 
+const changeCameraPosition = () => {
+  console.log("切换镜头")
+  console.log(camera)
+  // 点击按钮时改变相机的位置，加入 Tween.js 动画
+  if (camera) {
+    const currentPosition = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+    const targetPosition = { x: 50, y: 50, z: 50 };
+
+    new TWEEN.Tween(currentPosition)
+      .to(targetPosition, 1000) // 1000毫秒（1秒）的动画时间
+      .easing(TWEEN.Easing.Quadratic.Out) // 缓动函数，可以根据需要选择
+      .onUpdate(() => {
+        camera!.position.set(currentPosition.x, currentPosition.y, currentPosition.z);
+      })
+      .start();
+  }
+}
+
+
 // 创建场景
 const initScene = () => {
   scene = new THREE.Scene();
   // 设置场景背景色为白色
-  scene.background = new THREE.Color(0x333333);
+  // scene.background = new THREE.Color(0xffffff);
+  // const textureLoader = new THREE.TextureLoader();
+  // const texture = textureLoader.load('img/015.png'); // 替换为你的图片路径
+  // scene.background = texture;
+
+ // 使用 TextureLoader 加载图片
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load('img/015.png'); // 替换为你的图片路径
+
+  // 调整纹理的minFilter，确保在小尺寸下保持清晰
+  texture.minFilter = THREE.LinearFilter;
+
+  // 调整纹理的wrapS和wrapT，确保在整个场景中正确重复
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+
+  // 设置纹理的重复方式，以确保图片完全展示在整个场景中
+  texture.repeat.set(1, 1);
+
+  // 设置背景为加载的纹理
+  scene.background = texture;
 };
 
 // 加载FBX模型
 const loadFBXModel = (modelPath: string) => {
   const loader = new FBXLoader();
   loader.load(modelPath, (fbx) => {
+    model = fbx
+    // 旋转模型
+    // fbx.rotation.x = Math.PI / 2; // 90 度
+    fbx.rotation.x = Math.PI / 2; // 90 度
+    fbx.rotation.y = Math.PI ; // 90 度
+    fbx.rotation.z = Math.PI / 2; // 90 度
     // 设置模型的缩放属性
-    fbx.scale.set(1, 1, 1);
+    fbx.scale.set(0.001, 0.001, 0.001);
     // 设置模型的位置
     fbx.position.set(0, 0, 0);
 
@@ -93,21 +144,22 @@ const initCamera = () => {
 
   const target = new THREE.Vector3(0, 10, 0);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(5,5,5);
+  camera.position.set(30,30,30);
   camera.lookAt(target);
 }
 
 // 创建灯光
 const initLight = () => {
-  // ambientLight = new THREE.AmbientLight(0xffffff, 1); // 颜色、强度
-  // scene.add(ambientLight);
-  const hesLight = new THREE.HemisphereLight(0xffffff,0x444444)
-  hesLight.intensity = 0.6
-  scene.add(hesLight)
+  ambientLight = new THREE.AmbientLight(0xffffff, 1); // 颜色、强度
+  scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight()
-  dirLight.position.set(5,5,5)
-  scene.add(dirLight)
+  // const hesLight = new THREE.HemisphereLight(0xffffff,0x444444)
+  // hesLight.intensity = 0.6
+  // scene.add(hesLight)
+
+  // const dirLight = new THREE.DirectionalLight()
+  // dirLight.position.set(5,5,5)
+  // scene.add(dirLight)
 }
 
 // 添加坐标轴辅助/网格辅助
@@ -133,7 +185,20 @@ const initRenderer = () =>{
 const animate = () => {
   // 更新动画逻辑
   requestAnimationFrame(animate);
+  // 更新 Tween.js
+  TWEEN.update();
+  // 记录相机的位置和朝向
+  const cameraPosition = camera.position.clone();
+  const cameraRotation = camera.rotation.clone();
 
+  // console.log(cameraPosition)
+  // console.log(cameraRotation)
+
+  // 沿 Y 轴旋转
+  // if (model) {
+  //   model.rotation.z += 0.01; // 调整旋转速度
+  // }
+  
   // 渲染场景
   renderer.render(scene, camera);
 };
