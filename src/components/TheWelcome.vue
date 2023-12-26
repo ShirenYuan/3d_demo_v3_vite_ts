@@ -10,6 +10,7 @@ import { ref, onMounted, watch ,defineProps } from 'vue';
 import * as THREE from 'three';
 import TWEEN from 'tween.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader';
 // 在导入的地方添加以下导入语句
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -18,6 +19,7 @@ let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let renderer: THREE.WebGLRenderer;
 let ambientLight: THREE.AmbientLight;
+let dirLight: THREE.DirectionalLight;
 let controls: OrbitControls;
 let model;
 // 定义属性，接收父组件传递的方法
@@ -88,17 +90,16 @@ onMounted(() => {
     new TWEEN.Tween({})
       .to({}, 1000)
       .onUpdate(() => {
-        camera.rotation.copy(targetRotation);
+        // 在Tween完成时触发change事件，传递当前的index值
+        
       })
       .onComplete(() => {
-        // 在Tween完成时触发change事件，传递当前的index值
-        if (parents.parentMethod) {
-          parents.parentMethod(currentIndex);
-        }
-
+        camera.rotation.copy(targetRotation);
       })
       .start();
-
+    if (parents.parentMethod) {
+      parents.parentMethod(currentIndex);
+    }
     currentIndex = (currentIndex + 1) % parents.cameraList.length;
   };
   if(timer.value){
@@ -111,28 +112,15 @@ onMounted(() => {
 // 创建场景
 const initScene = () => {
   scene = new THREE.Scene();
-  // 设置场景背景色为白色
-  // scene.background = new THREE.Color(0xffffff);
-  // const textureLoader = new THREE.TextureLoader();
-  // const texture = textureLoader.load('img/015.png'); // 替换为你的图片路径
-  // scene.background = texture;
-
- // 使用 TextureLoader 加载图片
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load('img/015.png'); // 替换为你的图片路径
-
-  // 调整纹理的minFilter，确保在小尺寸下保持清晰
-  texture.minFilter = THREE.LinearFilter;
-
-  // 调整纹理的wrapS和wrapT，确保在整个场景中正确重复
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-
-  // 设置纹理的重复方式，以确保图片完全展示在整个场景中
-  texture.repeat.set(1, 1);
-
-  // 设置背景为加载的纹理
-  scene.background = texture;
+  // 使用 RGBELoader 加载HDR纹理
+  const rgbeLoader = new RGBELoader();
+  // const hdrTexture = rgbeLoader.load('img/015.hdr', (texture) => {
+  const hdrTexture = rgbeLoader.load('img/017.hdr', (texture) => {
+    // 处理加载完成后的回调
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = texture;
+    scene.environment = texture; // 设置环境纹理
+  });
 };
 
 // 加载FBX模型
@@ -157,48 +145,21 @@ const loadFBXModel = (modelPath: string) => {
 
 // 创建相机
 const initCamera = () => {
-  // THREE.PerspectiveCamera(fov: number, aspect: number, near: number, far: number)
-
-  // fov (Field of View):
-  // 类型: number
-  // 描述: 视场角，指的是相机可见区域的垂直范围，单位是度（degrees）。
-  // 典型值: 通常设置在 45 到 75 度之间，视场角越大，可见区域越广。
-
-  // aspect:
-  // 类型: number
-  // 描述: 屏幕宽度和高度的比值，即视口的宽高比。
-  // 计算方式: aspect = width / height，其中 width 是屏幕宽度，height 是屏幕高度。
-  // 典型值: 设置为视口宽高比，以保持画面不变形。
-
-  // near:
-  // 类型: number
-  // 描述: 相机到视景体近端的距离。
-  // 典型值: 通常设置一个正数，代表相机到近端的距离，不能为负数。
-
-  // far:
-  // 类型: number
-  // 描述: 相机到视景体远端的距离。
-  // 典型值: 通常设置为正数，表示相机到远端的距离，必须大于 near。
-
   const target = new THREE.Vector3(0, 10, 0);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(30, 30, 30);
-  // camera.rotation.set(0, 0, 0);
   camera.lookAt(target);
 }
 
 // 创建灯光
 const initLight = () => {
-  ambientLight = new THREE.AmbientLight(0xffffff, 1); // 颜色、强度
-  scene.add(ambientLight);
+  // ambientLight = new THREE.AmbientLight(0xffffff, 1); // 颜色、强度
+  // scene.add(ambientLight);
 
-  // const hesLight = new THREE.HemisphereLight(0xffffff,0x444444)
-  // hesLight.intensity = 0.6
-  // scene.add(hesLight)
-
-  // const dirLight = new THREE.DirectionalLight()
-  // dirLight.position.set(5,5,5)
-  // scene.add(dirLight)
+  dirLight = new THREE.DirectionalLight(0xffffff, 3);
+  dirLight.position.set(5, 5, 5); // 设置光照方向
+  dirLight.castShadow = true; 
+  scene.add(dirLight);
 }
 
 // 添加坐标轴辅助/网格辅助

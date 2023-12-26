@@ -10,7 +10,7 @@ type EChartsOption = echarts.EChartsOption;
 
 const animIndex = ref(0)
 const cameraList = ref([
-
+  {status:"0",id: "18",name:"全景",cameraPosition:{x:"30",y:"30",z:"30"},cameraRotation:{x:"-0.78",y:"0.61",z:"0.5"}},
   {status:"0",id: "1",name:"X射线衍射仪",cameraPosition:{x:"12.31",y:"2.93",z:"-32.63"},cameraRotation:{x:"-1.48",y:"-1.06",z:"-1.47"}},
   {status:"1",id: "2",name:"高频疲劳材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
   {status:"0",id: "3",name:"高温拉伸设备",cameraPosition:{x:"13.96",y:"4.66",z:"-21.76"},cameraRotation:{x:"-2.57",y:"-0.13",z:"-3.05"}},
@@ -36,23 +36,97 @@ const parentMethod = (index:number) => {
   animIndex.value = index
 };
 
+const realList = ref([
+  {
+    roomName:"全景",
+    roomId:"0",
+    list:[
+      {name:"全景",id:"0",status:"1",cameraPosition:{x:"30",y:"30",z:"30"},cameraRotation:{x:"-0.78",y:"0.61",z:"0.5"}}
+    ]
+  },
+  {
+    roomName:"X射线衍射实验室",
+    roomId:"1",
+    list:[
+      {name:"X射线衍射仪",id:"1",status:"1",cameraPosition:{x:"12.31",y:"2.93",z:"-32.63"},cameraRotation:{x:"-1.48",y:"-1.06",z:"-1.47"}}
+    ]
+  },
+  {
+    roomName:"材料疲劳分析室",
+    roomId:"2",
+    list:[
+      {name:"高频疲劳材料试验机",id:"2",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}}
+    ]
+  },
+  {
+    roomName:"材料及构件可靠性测试分析实验室",
+    roomId:"3",
+    list:[
+      {name:"高温拉伸设备",id:"3",status:"0",cameraPosition:{x:"13.96",y:"4.66",z:"-21.76"},cameraRotation:{x:"-2.57",y:"-0.13",z:"-3.05"}},
+      {name:"电子拉伸材料试验机",id:"4",status:"0",cameraPosition:{x:"11.22",y:"2.76",z:"-22.19"},cameraRotation:{x:"-2.88",y:"0.18",z:"3.09"}}
+    ]
+  },
+  {
+    roomName:"塑料成形实验室",
+    roomId:"4",
+    list:[
+      {name:"注塑机",id:"5",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      {name:"锥形双螺杆挤出机",id:"6",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+    ]
+  },
+  {
+    roomName:"焊接工程实验室",
+    roomId:"5",
+    list:[
+      {name:"焊接机器人",id:"7",status:"1",cameraPosition:{x:"1.72",y:"3.90",z:"-24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
+    ]
+  },
+  {
+    roomName:"试件设计加工中心/焊接及扩散焊室",
+    roomId:"6",
+    list:[
+      {name:"激光清洗机",id:"8",status:"0",cameraPosition:{x:"1.72",y:"3.90",z:" -24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
+      {name:"真空纤维炉",id:"9",status:"1",cameraPosition:{x:"-3.62",y:"3.56",z:"-18.26"},cameraRotation:{x:"-2.65",y:"1.30",z:"2.66"}},
+    ]
+  },
+  {
+    roomName:"压力成型实验室",
+    roomId:"7",
+    list:[
+      {name:"伺服压力机",id:"10",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+    ]
+  },
+  {
+    roomName:"激光工业技术研究所",
+    roomId:"8",
+    list:[
+      {name:"光纤激光加工控制系统",id:"11",status:"0",cameraPosition:{x:"-0.39",y:"2.97",z:"4.33"},cameraRotation:{x:"-1.61",y:"-1.37",z:"-1.61"}},
+      {name:"连续激光机",id:"12",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      {name:"CMT冷金属过渡焊接系统",id:"13",status:"1",cameraPosition:{x:"-4.34",y:"3.49",z:"3.80"},cameraRotation:{x:"-2.84",y:"-0.17",z:"-3.08"}},
+      {name:"球磨机",id:"14",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      {name:"纳秒激光器",id:"15",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      {name:"三坐标",id:"16",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+    ]
+  }
+  ,
+  {
+    roomName:"蟠变试验机研究室",
+    roomId:"9",
+    list:[
+      {name:"蟠变试验机",id:"17",status:"0",cameraPosition:{x:"-1.12",y:"2.84",z:"28.70"},cameraRotation:{x:"3.02",y:"0.10",z:"3.12"}},
+    ]
+  }
+])
 
-const list = ref([
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "1",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-  {name: "xx实验室",shebei: "实验设备名称xx",status: "0",},
-]);
-
+const transformedArray = realList.value.flatMap(room => room.list.map(item => ({
+  name: item.name,
+  roomName: room.roomName,
+  status: item.status,
+  id: item.id,
+  roomId: room.roomId,
+  cameraPosition: item.cameraPosition,
+  cameraRotation: item.cameraRotation,
+})));
 
 var option: EChartsOption;
 option = {
@@ -157,12 +231,12 @@ function initChartFun(className:string,optionDatil:object){
 <template>
   <main>
     <div class="main">
-      <TheWelcome class="main_3d" :cameraList="cameraList" :parentMethod="parentMethod" />
+      <TheWelcome class="main_3d" :cameraList="transformedArray" :parentMethod="parentMethod" />
       <!-- detail -->
-      <div class="main_detail">
-        <div class="main_detail_title">{{ cameraList[animIndex].name }}</div>
-        <div v-if="cameraList[animIndex].status=='0'" class="main_detail_status">未使用</div>
-        <div v-if="cameraList[animIndex].status=='1'" class="main_detail_status2">使用中</div>
+      <div class="main_detail" v-if="animIndex!=0">
+        <div class="main_detail_title">{{ transformedArray[animIndex].name }}</div>
+        <div v-if="transformedArray[animIndex].status=='0'" class="main_detail_status">未使用</div>
+        <div v-if="transformedArray[animIndex].status=='1'" class="main_detail_status2">使用中</div>
       </div>
       <!-- top -->
       <div class="main_top">
@@ -304,14 +378,16 @@ function initChartFun(className:string,optionDatil:object){
               </div>
               <div class="main_content_right_one_content_content">
                 <div class="main_content_right_one_content_content_ul">
-                  <vue3-seamless-scroll :list="list" class="scroll">
-                    <div class="main_content_right_one_content_content_ul_li" v-for="(item, index) in list" :key="index">
-                      <div class="main_content_right_one_content_content_ul_li_icon"></div>
-                      <div class="main_content_right_one_content_content_ul_li_name">{{ item.name }}</div>
-                      <div class="main_content_right_one_content_content_ul_li_shebei">{{ item.shebei }}</div>
-                      <div v-if="item.status=='0'" class="main_content_right_one_content_content_ul_li_status">使用中</div>
-                      <div v-if="item.status=='1'" class="main_content_right_one_content_content_ul_li_status2">未使用</div>
-                    </div>
+                  <vue3-seamless-scroll :list="transformedArray" class="scroll">
+                    <template v-for="(item, index) in transformedArray" :key="index">
+                      <div class="main_content_right_one_content_content_ul_li" v-if="index!=0">
+                        <div class="main_content_right_one_content_content_ul_li_icon"></div>
+                        <div class="main_content_right_one_content_content_ul_li_name">{{ item.roomName }}</div>
+                        <div class="main_content_right_one_content_content_ul_li_shebei">{{ item.name }}</div>
+                        <div v-if="item.status=='0'" class="main_content_right_one_content_content_ul_li_status">使用中</div>
+                        <div v-if="item.status=='1'" class="main_content_right_one_content_content_ul_li_status2">未使用</div>
+                      </div>
+                    </template>
                   </vue3-seamless-scroll>
                 </div>
               </div>
@@ -867,22 +943,30 @@ function initChartFun(className:string,optionDatil:object){
                   margin-right: 16.5px;
                 }
                 .main_content_right_one_content_content_ul_li_name {
+                  width: 35%;
                   font-size: 16px;
                   font-family: SourceHanSansCN;
                   font-weight: 400;
                   color: #FFFFFF;
                   line-height: 1;
                   text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
-                  margin-right: 51.5px;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                  white-space:nowrap;
+                  margin-right: 10px;
                 }
                 .main_content_right_one_content_content_ul_li_shebei {
+                  width: 40%;
                   font-size: 16px;
                   font-family: SourceHanSansCN;
                   font-weight: 400;
                   color: #FFFFFF;
                   line-height: 1;
                   text-shadow: 0px 5px 5px rgba(1,1,1,0.2);
-                  margin-right: 89px;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                  white-space:nowrap;
+                  margin-right: 10px;
                 }
                 .main_content_right_one_content_content_ul_li_status {
                   width: 44px;
