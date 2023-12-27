@@ -10,7 +10,7 @@ type EChartsOption = echarts.EChartsOption;
 
 const animIndex = ref(0)
 const cameraList = ref([
-  {status:"0",id: "18",name:"全景",cameraPosition:{x:"30",y:"30",z:"30"},cameraRotation:{x:"-0.78",y:"0.61",z:"0.5"}},
+  {status:"0",id: "18",name:"全景",cameraPosition:{x:"25.41",y:"44.93",z:"5.9"},cameraRotation:{x:"-1.44",y:"0.51",z:"1.31"}},
   {status:"0",id: "1",name:"X射线衍射仪",cameraPosition:{x:"12.31",y:"2.93",z:"-32.63"},cameraRotation:{x:"-1.48",y:"-1.06",z:"-1.47"}},
   {status:"1",id: "2",name:"高频疲劳材料试验机",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
   {status:"0",id: "3",name:"高温拉伸设备",cameraPosition:{x:"13.96",y:"4.66",z:"-21.76"},cameraRotation:{x:"-2.57",y:"-0.13",z:"-3.05"}},
@@ -41,7 +41,7 @@ const realList = ref([
     roomName:"全景",
     roomId:"0",
     list:[
-      {name:"全景",id:"0",status:"1",cameraPosition:{x:"30",y:"30",z:"30"},cameraRotation:{x:"-0.78",y:"0.61",z:"0.5"}}
+      {name:"全景",id:"0",status:"1",cameraPosition:{x:"25.41",y:"44.93",z:"5.9"},cameraRotation:{x:"-1.44",y:"0.51",z:"1.31"}}
     ]
   },
   {
@@ -70,8 +70,8 @@ const realList = ref([
     roomName:"塑料成形实验室",
     roomId:"4",
     list:[
-      {name:"注塑机",id:"5",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
-      {name:"锥形双螺杆挤出机",id:"6",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"注塑机",id:"5",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"锥形双螺杆挤出机",id:"6",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
     ]
   },
   {
@@ -85,7 +85,7 @@ const realList = ref([
     roomName:"试件设计加工中心/焊接及扩散焊室",
     roomId:"6",
     list:[
-      {name:"激光清洗机",id:"8",status:"0",cameraPosition:{x:"1.72",y:"3.90",z:" -24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
+      // {name:"激光清洗机",id:"8",status:"0",cameraPosition:{x:"1.72",y:"3.90",z:" -24.48"},cameraRotation:{x:"-1.53",y:"-0.94",z:"-1.52"}},
       {name:"真空纤维炉",id:"9",status:"1",cameraPosition:{x:"-3.62",y:"3.56",z:"-18.26"},cameraRotation:{x:"-2.65",y:"1.30",z:"2.66"}},
     ]
   },
@@ -93,7 +93,7 @@ const realList = ref([
     roomName:"压力成型实验室",
     roomId:"7",
     list:[
-      {name:"伺服压力机",id:"10",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"伺服压力机",id:"10",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
     ]
   },
   {
@@ -101,11 +101,11 @@ const realList = ref([
     roomId:"8",
     list:[
       {name:"光纤激光加工控制系统",id:"11",status:"0",cameraPosition:{x:"-0.39",y:"2.97",z:"4.33"},cameraRotation:{x:"-1.61",y:"-1.37",z:"-1.61"}},
-      {name:"连续激光机",id:"12",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"连续激光机",id:"12",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
       {name:"CMT冷金属过渡焊接系统",id:"13",status:"1",cameraPosition:{x:"-4.34",y:"3.49",z:"3.80"},cameraRotation:{x:"-2.84",y:"-0.17",z:"-3.08"}},
-      {name:"球磨机",id:"14",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
-      {name:"纳秒激光器",id:"15",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
-      {name:"三坐标",id:"16",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"球磨机",id:"14",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"纳秒激光器",id:"15",status:"0",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
+      // {name:"三坐标",id:"16",status:"1",cameraPosition:{x:"11.92",y:"3.41",z:"-25.36"},cameraRotation:{x:"-2.52",y:"0.77",z:"2.68"}},
     ]
   }
   ,
@@ -317,7 +317,7 @@ function initChartFun(className:string,optionDatil:object){
               <div class="main_content_left_one_content_left"></div>
               <div class="main_content_left_one_content_right">
                 <div class="main_content_left_one_content_right_one main_content_left_one_content_right_one1">
-                  <div class="main_content_left_one_content_right_one_name">实验仪器名称1</div>
+                  <div class="main_content_left_one_content_right_one_name">{{ transformedArray[1].name }}</div>
                   <div class="main_content_left_one_content_right_one_icon"></div>
                   <div class="main_content_left_one_content_right_one_text">
                     <div class="main_content_left_one_content_right_one_text_one">
@@ -331,7 +331,7 @@ function initChartFun(className:string,optionDatil:object){
                   </div>
                 </div>
                 <div class="main_content_left_one_content_right_one main_content_left_one_content_right_one2">
-                  <div class="main_content_left_one_content_right_one_name">实验仪器名称2</div>
+                  <div class="main_content_left_one_content_right_one_name">{{ transformedArray[5].name }}</div>
                   <div class="main_content_left_one_content_right_one_icon2"></div>
                   <div class="main_content_left_one_content_right_one_text">
                     <div class="main_content_left_one_content_right_one_text_one">
@@ -345,7 +345,7 @@ function initChartFun(className:string,optionDatil:object){
                   </div>
                 </div>
                 <div class="main_content_left_one_content_right_one main_content_left_one_content_right_one3">
-                  <div class="main_content_left_one_content_right_one_name">实验仪器名称3</div>
+                  <div class="main_content_left_one_content_right_one_name">{{ transformedArray[3].name }}</div>
                   <div class="main_content_left_one_content_right_one_icon3"></div>
                   <div class="main_content_left_one_content_right_one_text">
                     <div class="main_content_left_one_content_right_one_text_one">
@@ -550,6 +550,7 @@ function initChartFun(className:string,optionDatil:object){
       .main_content_left_one {
         width: 100%;
         height: 350px;
+        margin-top: 50px;
         .main_content_left_one_title {
           width: 100%;
           height: 50px;
@@ -866,6 +867,8 @@ function initChartFun(className:string,optionDatil:object){
       top: 0;
 
       .main_content_right_one {
+        margin-top: 50px;
+
         .main_content_right_one_title {
           width: 100%;
           height: 50px;
